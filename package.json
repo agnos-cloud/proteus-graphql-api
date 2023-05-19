@@ -1,0 +1,9 @@
+{
+  "name": "proteus-graphql-api",
+  "version": "0.0.1",
+  "description": "GraphQL API for Proteus",
+  "main": "index.ts",
+  "author": "Franklin Chieze",
+  "license": "MIT",
+  "private": false
+}
