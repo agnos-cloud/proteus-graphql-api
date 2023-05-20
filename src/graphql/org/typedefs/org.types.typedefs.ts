@@ -7,7 +7,7 @@ export const typeDefs = gql`
         description: String
     }
 
-    type OrgInput {
+    input OrgInput {
         name: String!
         description: String
     }
