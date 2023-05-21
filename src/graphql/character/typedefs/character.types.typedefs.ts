@@ -1,16 +1,21 @@
 import { gql } from "apollo-server-core";
 
 export const typeDefs = gql`
-    type Org {
+    type Character {
         id: ID!
         name: String!
         description: String
-        openaiApiKey: String
     }
 
-    input OrgInput {
+    input CharacterInput {
         name: String!
+        org: ID!
         description: String
+    }
+
+    input CharacterSearchInput {
+        name: String
+        org: ID!
     }
 `;
 

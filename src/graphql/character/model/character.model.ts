@@ -1,6 +1,5 @@
-export interface Org {
+export interface Character {
     id: string;
     name: string;
     description: string;
-    openaiApiKey?: string;
 }
