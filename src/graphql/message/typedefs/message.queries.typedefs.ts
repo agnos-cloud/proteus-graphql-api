@@ -2,7 +2,7 @@ import { gql } from "apollo-server-core";
 
 export const typeDefs = gql`
     type Query {
-        conversations(input: ConversationSearchInput): [Conversation!]!
+        messages(input: CharacterMessageSearchInput): [CharacterMessage!]!
     }
 `;
 

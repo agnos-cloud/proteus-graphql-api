@@ -1,6 +1,6 @@
 import { ApolloError } from "apollo-server-core";
 import { GraphQLContext } from "../../../utils/types";
-import { Conversation } from "../model/conversation.model";
+import { Message } from "../model/message.model";
 import { Prisma } from "@prisma/client";
 
 export const characterPopulated = Prisma.validator<Prisma.ConversationCharacterInclude>()({
@@ -40,16 +40,8 @@ export const conversationPopulated = Prisma.validator<Prisma.ConversationInclude
     },
 });
 
-export type ConversationPopulated = Prisma.ConversationGetPayload<{
-    include: typeof conversationPopulated;
-}>;
-
-export type CharacterPopulated = Prisma.ConversationCharacterGetPayload<{
-    include: typeof characterPopulated;
-}>;
-
 export default {
-    createConversation: async (_: any, args: any, context: GraphQLContext): Promise<Conversation> => {
+    createMessage: async (_: any, args: any, context: GraphQLContext): Promise<Message> => {
         const { prisma, session } = context;
 
         if (!session?.user?.id) {
@@ -97,6 +89,7 @@ export default {
 
         return {
             id: conversation.id,
+            content: "",
         };
     }
 };

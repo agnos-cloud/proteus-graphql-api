@@ -1,8 +1,8 @@
 import { gql } from "apollo-server-core";
 
 export const typeDefs = gql`
-    type Query {
-        conversations(input: ConversationSearchInput): [Conversation!]!
+    type Mutation {
+        createMessage(input: CharacterMessageInput!): CharacterMessage!
     }
 `;
 

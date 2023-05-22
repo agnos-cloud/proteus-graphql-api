@@ -3,7 +3,6 @@ import { Org } from "../model/org.model";
 
 export default {
     createOrg: async (_: any, args: any, context: GraphQLContext): Promise<Org> => {
-        console.log(args);
         const { prisma, session } = context;
 
         if (!session?.user?.id) {

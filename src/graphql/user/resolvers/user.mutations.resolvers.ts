@@ -1,9 +1,9 @@
 import { ApolloError } from "apollo-server-core";
 import { GraphQLContext } from "../../../utils/types";
-import { Character } from "../model/character.model";
+import { User } from "../model/user.model";
 
 export default {
-    createCharacter: async (_: any, args: any, context: GraphQLContext): Promise<Character> => {
+    createUser: async (_: any, args: any, context: GraphQLContext): Promise<User> => {
         const { prisma, session } = context;
 
         if (!session?.user?.id) {

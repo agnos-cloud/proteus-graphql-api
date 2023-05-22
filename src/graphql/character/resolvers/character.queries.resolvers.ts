@@ -4,8 +4,6 @@ import { Character } from "../model/character.model";
 
 export default {
     characters: async (_: any, args: any, context: GraphQLContext): Promise<Array<Character>> => {
-        console.log(args);
-
         const { prisma, session } = context;
 
         if (!session?.user?.id) {

@@ -1,10 +1,9 @@
 import { ApolloError } from "apollo-server-core";
 import { GraphQLContext } from "../../../utils/types";
-import { Conversation } from "../model/conversation.model";
-import { ConversationPopulated, conversationPopulated } from "./conversation.mutations.resolvers";
+import { User } from "../model/user.model";
 
 export default {
-    conversations: async (_: any, args: any, context: GraphQLContext): Promise<Array<ConversationPopulated>> => {
+    users: async (_: any, args: any, context: GraphQLContext): Promise<Array<User>> => {
         const { prisma, session } = context;
 
         if (!session?.user?.id) {
@@ -23,24 +22,20 @@ export default {
             throw new ApolloError("You must be authenticated");
         }
 
-        const { org } = args.input;
+        const { name, org } = args.input;
 
-        const conversations = await prisma.conversation.findMany({
+        const characters = await prisma.character.findMany({
             where: {
-                users: {
-                    some: {
-                        userId: {
-                            equals: id,
-                        },
-                    },
+                name: {
+                    contains: name,
+                    mode: "insensitive",
                 },
                 org: {
                     id: org,
                 },
             },
-            include: conversationPopulated,
         });
 
-        return conversations;
+        return characters;
     }
 };
