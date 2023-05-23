@@ -25,6 +25,12 @@ export const conversationPopulated = Prisma.validator<Prisma.ConversationInclude
     characters: {
         include: characterPopulated,
     },
+    org: {
+        select: {
+            id: true,
+            name: true,
+        },
+    },
     users: {
         include: userPopulated,
     },
@@ -50,7 +56,7 @@ export type CharacterPopulated = Prisma.ConversationCharacterGetPayload<{
 
 export default {
     createConversation: async (_: any, args: any, context: GraphQLContext): Promise<Conversation> => {
-        const { prisma, session } = context;
+        const { prisma, session, pubsub } = context;
 
         if (!session?.user?.id) {
             throw new ApolloError("You must be authenticated");
@@ -93,6 +99,10 @@ export default {
                 },
             },
             include: conversationPopulated,
+        });
+
+        pubsub.publish("CONVERSATION_CREATED", {
+            conversationCreated: conversation,
         });
 
         return {
