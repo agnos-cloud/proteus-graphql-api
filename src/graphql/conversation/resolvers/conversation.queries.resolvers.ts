@@ -1,4 +1,4 @@
-import { ApolloError } from "apollo-server-core";
+import { GraphQLError } from "graphql";
 import { GraphQLContext } from "../../../utils/types";
 import { Conversation } from "../model/conversation.model";
 import { ConversationPopulated, conversationPopulated } from "./conversation.mutations.resolvers";
@@ -8,7 +8,7 @@ export default {
         const { prisma, session } = context;
 
         if (!session?.user?.id) {
-            throw new ApolloError("You must be authenticated");
+            throw new GraphQLError("You must be authenticated");
         }
 
        const { id } = session.user;
@@ -20,7 +20,7 @@ export default {
         });
 
         if (!user) {
-            throw new ApolloError("You must be authenticated");
+            throw new GraphQLError("You must be authenticated");
         }
 
         const { id: conversationId, org } = args.input;
@@ -48,7 +48,7 @@ export default {
         const { prisma, session } = context;
 
         if (!session?.user?.id) {
-            throw new ApolloError("You must be authenticated");
+            throw new GraphQLError("You must be authenticated");
         }
 
        const { id } = session.user;
@@ -60,7 +60,7 @@ export default {
         });
 
         if (!user) {
-            throw new ApolloError("You must be authenticated");
+            throw new GraphQLError("You must be authenticated");
         }
 
         const { org } = args.input;

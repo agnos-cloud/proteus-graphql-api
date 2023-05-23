@@ -1,20 +1,27 @@
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { PrismaClient } from "@prisma/client";
+// import {
+//     ApolloServerPluginLandingPageGraphQLPlayground
+// } from "apollo-server-core";
 import {
     ApolloServerPluginDrainHttpServer,
-    ApolloServerPluginLandingPageGraphQLPlayground,
-    ApolloServerPluginLandingPageLocalDefault,
-} from "apollo-server-core";
-import { ApolloServer } from "apollo-server-express";
+} from "@apollo/server/plugin/drainHttpServer";
+// import {
+//     ApolloServerPluginLandingPageLocalDefault,
+// } from "@apollo/server/plugin/landingPage/default";
+import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from "@apollo/server/express4";
 import * as dotenv from "dotenv";
 import express from "express";
+import { PubSub } from "graphql-subscriptions";
+import { useServer } from "graphql-ws/lib/use/ws";
 import http from "http";
 import { getSession } from "next-auth/react";
+import { WebSocketServer } from "ws";
 import graphql from "./graphql";
 import { GraphQLContext, SubscriptionContext } from "./utils/types";
-import { useServer } from "graphql-ws/lib/use/ws";
-import { WebSocketServer } from "ws";
-import { PubSub } from "graphql-subscriptions";
+import cors from "cors";
+import { json } from "body-parser";
 
 async function main() {
     dotenv.config();
@@ -42,20 +49,15 @@ async function main() {
         return { pubsub, prisma, session: null };
     } }, wsServer);
 
-    const corsOptions = {
-        origin: process.env.CLIENT_ORIGIN,
-        credentials: true,
-    };
-
     const server = new ApolloServer({
         // These will be defined for both new or existing servers
         schema,
         csrfPrevention: false,
-        cache: "bounded",
-        context: async ({ req, res }): Promise<GraphQLContext> => {
-            const session = await getSession({ req });
-            return { pubsub, prisma, session };
-        },
+        // cache: "bounded",
+        // context: async ({ req, res }): Promise<GraphQLContext> => {
+        //     const session = await getSession({ req });
+        //     return { pubsub, prisma, session };
+        // },
         plugins: [
             ApolloServerPluginDrainHttpServer({ httpServer }),
             {
@@ -69,22 +71,38 @@ async function main() {
                 }
             },
             // ApolloServerPluginLandingPageLocalDefault({ embed: true }),
-            ApolloServerPluginLandingPageGraphQLPlayground({
-                settings: {
-                    "request.credentials": "include",
-                }
-            }),
+            // ApolloServerPluginLandingPageGraphQLPlayground({
+            //     settings: {
+            //         "request.credentials": "include",
+            //     }
+            // }),
         ],
     });
 
     await server.start();
 
-    server.applyMiddleware({ app, cors: corsOptions });
+    // server.applyMiddleware({ app, cors: corsOptions });
 
-    await new Promise<void>((resolve) => httpServer.listen({ port: 3000 }, resolve));
-    console.log(
-        `🚀 Server ready at http://localhost:3000${server.graphqlPath}`
+    const corsOptions = {
+        origin: process.env.CLIENT_ORIGIN,
+        credentials: true,
+    };
+    app.use(
+        "/graphql",
+        cors<cors.CorsRequest>(corsOptions),
+        json(),
+        expressMiddleware(server, {
+            context: async ({ req }): Promise<GraphQLContext> => {
+                const session = await getSession({ req });
+                return { pubsub, prisma, session };
+            },
+        })
     );
+
+    const port = process.env.PORT || 3000;
+
+    await new Promise<void>((resolve) => httpServer.listen({ port }, resolve));
+    console.log(`🚀 Server ready at http://localhost:${port}/graphql`);
 }
 
 main().catch((err) => console.log(err));
