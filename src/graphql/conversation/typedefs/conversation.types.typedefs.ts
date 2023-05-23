@@ -10,6 +10,7 @@ export const typeDefs = gql`
         users: [ConversationUser!]!
         createdAt: Date
         updatedAt: Date
+        org: Org
     }
 
     input ConversationInput {
@@ -20,6 +21,7 @@ export const typeDefs = gql`
     input ConversationSearchInput {
         characters: [ID!]
         org: ID!
+        id: ID
     }
 
     type ConversationCharacter {
