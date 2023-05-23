@@ -1,4 +1,4 @@
-import { ApolloError } from "apollo-server-core";
+import { GraphQLError } from "graphql";
 import { GraphQLContext } from "../../../utils/types";
 import { Character } from "../model/character.model";
 
@@ -7,7 +7,7 @@ export default {
         const { prisma, session } = context;
 
         if (!session?.user?.id) {
-            throw new ApolloError("You must be authenticated");
+            throw new GraphQLError("You must be authenticated");
         }
 
        const { id } = session.user;
@@ -19,7 +19,7 @@ export default {
         });
 
         if (!user) {
-            throw new ApolloError("You must be authenticated");
+            throw new GraphQLError("You must be authenticated");
         }
 
         const { name, description, org } = args.input;
