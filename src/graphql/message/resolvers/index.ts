@@ -5,5 +5,5 @@ import Subscription from "./message.subscriptions.resolvers";
 export default {
     Mutation,
     Query,
-    // Subscription,
+    Subscription,
 };

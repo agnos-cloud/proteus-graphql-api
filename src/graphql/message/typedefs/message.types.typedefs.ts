@@ -8,6 +8,7 @@ export const typeDefs = gql`
         content: String
         createdAt: Date
         sender: Character
+        type: MessageType
     }
 
     type UserMessage {
@@ -15,16 +16,23 @@ export const typeDefs = gql`
         content: String
         createdAt: Date
         sender: User
+        type: MessageType
     }
 
-    input CharacterMessageInput {
-        characters: [ID!]
-        org: ID!
+    input MessageInput {
+        id: ID
+        content: String
+        conversation: ID!
+        sender: ID!
+        type: MessageType
     }
 
-    input CharacterMessageSearchInput {
-        characters: [ID!]!
-        org: ID!
+    input MessageSearchInput {
+        conversation: ID!
+    }
+
+    enum MessageType {
+        TEXT
     }
 `;
 

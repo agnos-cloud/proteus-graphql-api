@@ -62,7 +62,7 @@ model Org {
   name          String?
   description   String?
   image         String?
-  openaiApiKey  String?
+  openaiApiKey  String?   @unique
   memberships   Membership[]
   characters    Character[]
   conversations Conversation[]

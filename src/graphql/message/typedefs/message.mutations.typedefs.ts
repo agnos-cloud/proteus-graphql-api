@@ -2,7 +2,8 @@ import gql from "graphql-tag";
 
 export const typeDefs = gql`
     type Mutation {
-        createMessage(input: CharacterMessageInput!): CharacterMessage!
+        sendCharacterMessage(input: MessageInput!): Boolean
+        sendUserMessage(input: MessageInput!): Boolean
     }
 `;
 

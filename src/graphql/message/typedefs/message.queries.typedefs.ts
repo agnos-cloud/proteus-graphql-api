@@ -2,7 +2,8 @@ import gql from "graphql-tag";
 
 export const typeDefs = gql`
     type Query {
-        messages(input: CharacterMessageSearchInput): [CharacterMessage!]!
+        characterMessages(input: MessageSearchInput): [CharacterMessage!]!
+        userMessages(input: MessageSearchInput): [UserMessage!]!
     }
 `;
 
