@@ -1,5 +1,6 @@
 import { withFilter } from "graphql-subscriptions";
 import { GraphQLContext } from "../../../utils/types";
+import { userIsConversationParticipant } from "../../../utils/functions";
 
 export default {
     conversationCreated: {
@@ -12,7 +13,8 @@ export default {
             },
             (payload, variables, context: GraphQLContext) => {
                 return payload.conversationCreated.org.id === variables.input.org &&
-                    payload.conversationCreated.users.some((user: any) => user.userId === context.session?.user?.id);
+                    // payload.conversationCreated.users.some((user: any) => user.userId === context.session?.user?.id);
+                    userIsConversationParticipant(payload.conversationCreated.users, context.session?.user?.id);
             }
         )
     },
@@ -23,7 +25,8 @@ export default {
             },
             (payload, variables, context: GraphQLContext) => {
                 return payload.conversationUpdated.org.id === variables.input.org &&
-                    payload.conversationUpdated.users.some((user: any) => user.userId === context.session?.user?.id);
+                    // payload.conversationUpdated.users.some((user: any) => user.userId === context.session?.user?.id);
+                    userIsConversationParticipant(payload.conversationUpdated.users, context.session?.user?.id);
             }
         )
     }
