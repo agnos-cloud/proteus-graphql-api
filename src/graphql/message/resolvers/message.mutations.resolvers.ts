@@ -144,7 +144,7 @@ export default {
                     input: {
                         id: new ObjectID().toString(),
                         conversation: conversationId,
-                        content: `My name is ${character.character.name}. I am an AI character.`,
+                        content: `My name is ${character.character.name}. I am an AI character. `,
                         sender: character.characterId,
                         type: "TEXT",
                     },
