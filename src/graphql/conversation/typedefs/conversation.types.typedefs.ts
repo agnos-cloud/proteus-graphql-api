@@ -20,7 +20,7 @@ export const typeDefs = gql`
 
     input ConversationSearchInput {
         characters: [ID!]
-        org: ID!
+        org: ID
         id: ID
     }
 
@@ -34,6 +34,10 @@ export const typeDefs = gql`
         hasUnread: Boolean
         user: User
     }
+
+    # type ConversationUpdatedSubscriptionPayload {
+    #     conversation: Conversation
+    # }
 `;
 
 export default typeDefs;
