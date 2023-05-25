@@ -112,5 +112,44 @@ export default {
         return {
             id: conversation.id,
         };
+    },
+    markConversationAsRead: async (_: any, args: any, context: GraphQLContext): Promise<boolean> => {
+        const { prisma, session, pubsub } = context;
+
+        if (!session?.user?.id) {
+            throw new GraphQLError("You must be authenticated");
+        }
+
+       const { id } = session.user;
+
+        const user = await prisma.user.findUnique({
+            where: {
+                id,
+            },
+        });
+
+        if (!user) {
+            throw new GraphQLError("You must be authenticated");
+        }
+
+        const { id: conversationId } = args;
+        const convoUser = await prisma.conversationUser.findFirst({
+            where: {
+                conversationId,
+                userId: user.id,
+            },
+        });
+        if (convoUser) {
+            await prisma.conversationUser.update({
+                where: {
+                    id: convoUser.id,
+                },
+                data: {
+                    hasUnread: false,
+                },
+            });
+        }
+
+        return true;
     }
 };
