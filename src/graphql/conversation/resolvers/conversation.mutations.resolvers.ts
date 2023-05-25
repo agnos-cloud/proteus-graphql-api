@@ -21,6 +21,10 @@ export const userPopulated = Prisma.validator<Prisma.ConversationUserInclude>()(
     },
 });
 
+export type UserPopulated = Prisma.ConversationUserGetPayload<{
+    include: typeof userPopulated;
+}>;
+
 export const conversationPopulated = Prisma.validator<Prisma.ConversationInclude>()({
     characters: {
         include: characterPopulated,

@@ -15,5 +15,16 @@ export default {
                     payload.conversationCreated.users.some((user: any) => user.userId === context.session?.user?.id);
             }
         )
+    },
+    conversationUpdated: {
+        subscribe: withFilter(
+            (_: any, __: any, { pubsub }: GraphQLContext) => {
+                return pubsub.asyncIterator(["CONVERSATION_UPDATED"]);
+            },
+            (payload, variables, context: GraphQLContext) => {
+                return payload.conversationUpdated.org.id === variables.input.org &&
+                    payload.conversationUpdated.users.some((user: any) => user.userId === context.session?.user?.id);
+            }
+        )
     }
 };

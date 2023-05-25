@@ -3,6 +3,7 @@ import conversation from "./conversation";
 import message from "./message";
 import org from "./org";
 import user from "./user";
+import scalarResolvers from "./scalar";
 import merge from "lodash.merge";
 
 export default {
@@ -12,7 +13,7 @@ export default {
         conversation.resolvers,
         message.resolvers,
         org.resolvers,
-        user.resolvers,
+        scalarResolvers,
     ),
     typeDefs: [
         ...character.typeDefs,

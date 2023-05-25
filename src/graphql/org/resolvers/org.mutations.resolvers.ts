@@ -1,5 +1,5 @@
+import { Org } from "@prisma/client";
 import { GraphQLContext } from "../../../utils/types";
-import { Org } from "../model/org.model";
 
 export default {
     createOrg: async (_: any, args: any, context: GraphQLContext): Promise<Org> => {

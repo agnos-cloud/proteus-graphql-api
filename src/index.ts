@@ -1,14 +1,8 @@
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { PrismaClient } from "@prisma/client";
-// import {
-//     ApolloServerPluginLandingPageGraphQLPlayground
-// } from "apollo-server-core";
 import {
     ApolloServerPluginDrainHttpServer,
 } from "@apollo/server/plugin/drainHttpServer";
-// import {
-//     ApolloServerPluginLandingPageLocalDefault,
-// } from "@apollo/server/plugin/landingPage/default";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import * as dotenv from "dotenv";
@@ -53,11 +47,6 @@ async function main() {
         // These will be defined for both new or existing servers
         schema,
         csrfPrevention: false,
-        // cache: "bounded",
-        // context: async ({ req, res }): Promise<GraphQLContext> => {
-        //     const session = await getSession({ req });
-        //     return { pubsub, prisma, session };
-        // },
         plugins: [
             ApolloServerPluginDrainHttpServer({ httpServer }),
             {
@@ -70,18 +59,10 @@ async function main() {
                     };
                 }
             },
-            // ApolloServerPluginLandingPageLocalDefault({ embed: true }),
-            // ApolloServerPluginLandingPageGraphQLPlayground({
-            //     settings: {
-            //         "request.credentials": "include",
-            //     }
-            // }),
         ],
     });
 
     await server.start();
-
-    // server.applyMiddleware({ app, cors: corsOptions });
 
     const corsOptions = {
         origin: process.env.CLIENT_ORIGIN,
