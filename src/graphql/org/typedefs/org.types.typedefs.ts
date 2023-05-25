@@ -12,6 +12,10 @@ export const typeDefs = gql`
         name: String!
         description: String
     }
+
+    input OrgSearchInput {
+        id: String!
+    }
 `;
 
 export default typeDefs;
