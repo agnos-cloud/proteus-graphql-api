@@ -113,8 +113,53 @@ export default {
             id: conversation.id,
         };
     },
-    markConversationAsRead: async (_: any, args: any, context: GraphQLContext): Promise<boolean> => {
+    deleteConversation: async (_: any, args: any, context: GraphQLContext): Promise<boolean> => {
         const { prisma, session, pubsub } = context;
+
+        if (!session?.user?.id) {
+            throw new GraphQLError("You must be authenticated");
+        }
+
+       const { id } = session.user;
+
+        const user = await prisma.user.findUnique({
+            where: {
+                id,
+            },
+        });
+
+        if (!user) {
+            throw new GraphQLError("You must be authenticated");
+        }
+
+        const { id: conversationId } = args;
+        const [ __, ___, deletedConversation ] = await prisma.$transaction([
+            prisma.conversationCharacter.deleteMany({
+                where: {
+                    conversationId,
+                },
+            }),
+            prisma.conversationUser.deleteMany({
+                where: {
+                    conversationId,
+                },
+            }),
+            prisma.conversation.delete({
+                where: {
+                    id: conversationId,
+                },
+                include: conversationPopulated,
+            }),
+        ]);
+
+        pubsub.publish("CONVERSATION_DELETED", {
+            conversationDeleted: deletedConversation,
+        });
+
+        return true;
+    },
+    markConversationAsRead: async (_: any, args: any, context: GraphQLContext): Promise<boolean> => {
+        const { prisma, session } = context;
 
         if (!session?.user?.id) {
             throw new GraphQLError("You must be authenticated");

@@ -18,6 +18,18 @@ export default {
             }
         )
     },
+    conversationDeleted: {
+        subscribe: withFilter(
+            (_: any, __: any, { pubsub }: GraphQLContext) => {
+                return pubsub.asyncIterator(["CONVERSATION_DELETED"]);
+            },
+            (payload, variables, context: GraphQLContext) => {
+                return payload.conversationDeleted.org.id === variables.input.org; // &&
+                    // payload.conversationDeleted.users.some((user: any) => user.userId === context.session?.user?.id);
+                    // userIsConversationParticipant(payload.conversationDeleted.users, context.session?.user?.id);
+            }
+        )
+    },
     conversationUpdated: {
         subscribe: withFilter(
             (_: any, __: any, { pubsub }: GraphQLContext) => {

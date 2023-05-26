@@ -119,8 +119,8 @@ model ConversationCharacter {
   characterId   String   @db.ObjectId
   conversationId String   @db.ObjectId
 
-  character     Character     @relation(fields: [characterId], references: [id])
-  conversation  Conversation  @relation(fields: [conversationId], references: [id])
+  character     Character     @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  conversation  Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 }
 
 model ConversationUser {
@@ -132,8 +132,8 @@ model ConversationUser {
   hasUnread      Boolean  @default(false)
   userId         String   @db.ObjectId
 
-  conversation  Conversation  @relation(fields: [conversationId], references: [id])
-  user          User          @relation(fields: [userId], references: [id])
+  conversation  Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model CharacterMessage {
@@ -147,7 +147,7 @@ model CharacterMessage {
   type           MessageType     @default(TEXT)
 
   isLatestIn    Conversation?      @relation(name: "latestMessage")
-  conversation  Conversation       @relation(fields: [conversationId], references: [id])
+  conversation  Conversation       @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   sender        Character          @relation(fields: [senderId], references: [id])
 }
 
@@ -161,7 +161,7 @@ model UserMessage {
   senderId       String   @db.ObjectId
   type           MessageType     @default(TEXT)
 
-  conversation  Conversation  @relation(fields: [conversationId], references: [id])
+  conversation  Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   sender        User          @relation(fields: [senderId], references: [id])
 }
 
