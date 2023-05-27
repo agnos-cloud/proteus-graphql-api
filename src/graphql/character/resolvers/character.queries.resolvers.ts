@@ -26,10 +26,10 @@ export default {
 
         const characters = await prisma.character.findMany({
             where: {
-                name: {
+                ...(name && {name: {
                     contains: name,
                     mode: "insensitive",
-                },
+                }}),
                 org: {
                     id: org,
                 },
