@@ -3,6 +3,7 @@ import { GraphQLContext } from "../../../utils/types";
 import { Prisma } from "@prisma/client";
 import { ObjectID } from "bson";
 import { conversationPopulated } from "../../conversation/resolvers/conversation.mutations.resolvers";
+import { getCharacterResponse } from "../../../utils/character";
 
 export const characterMessagePopulated = Prisma.validator<Prisma.CharacterMessageInclude>()({
     sender: {
@@ -48,6 +49,7 @@ const sendCharacterMessage = async (_: any, args: any, context: GraphQLContext):
         },
         include: characterMessagePopulated,
     });
+    console.log(message);
 
     const conversation = await prisma.conversation.update({
         where: {
@@ -137,16 +139,20 @@ export default {
                 },
             },
         });
-        characters.forEach(async (character, index) => {
+        characters.forEach(async (character) => {
+            const { content: characterResponse, type: responseType } = await getCharacterResponse(content, {
+                characterId: character.characterId,
+                prisma,
+            });
             sendCharacterMessage(
                 _,
                 {
                     input: {
                         id: new ObjectID().toString(),
                         conversation: conversationId,
-                        content: `My name is ${character.character.name}. I am an AI character. `,
+                        content: characterResponse,
                         sender: character.characterId,
-                        type: "TEXT",
+                        type: responseType,
                     },
                 },
                 context

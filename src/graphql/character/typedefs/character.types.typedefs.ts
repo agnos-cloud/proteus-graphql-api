@@ -5,6 +5,9 @@ export const typeDefs = gql`
         id: ID!
         name: String!
         description: String
+        image: String
+        createdAt: Date
+        updatedAt: Date
     }
 
     input CharacterInput {

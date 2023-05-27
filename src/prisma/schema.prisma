@@ -90,6 +90,8 @@ model Character {
   image         String?
   description   String?
   orgId         String   @db.ObjectId
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
   conversations ConversationCharacter[]
   messages      CharacterMessage[]
 
@@ -167,4 +169,5 @@ model UserMessage {
 
 enum MessageType {
   TEXT
+  ERROR_MESSAGE
 }

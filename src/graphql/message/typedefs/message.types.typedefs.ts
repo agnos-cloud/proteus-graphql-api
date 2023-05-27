@@ -39,6 +39,7 @@ export const typeDefs = gql`
 
     enum MessageType {
         TEXT
+        ERROR_MESSAGE
     }
 `;
 

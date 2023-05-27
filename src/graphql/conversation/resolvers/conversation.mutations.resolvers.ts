@@ -133,7 +133,13 @@ export default {
         }
 
         const { id: conversationId } = args;
-        const [ __, ___, deletedConversation ] = await prisma.$transaction([
+        const [ deletedConversation ] = await prisma.$transaction([
+            prisma.conversation.delete({
+                where: {
+                    id: conversationId,
+                },
+                include: conversationPopulated,
+            }),
             prisma.conversationCharacter.deleteMany({
                 where: {
                     conversationId,
@@ -143,12 +149,6 @@ export default {
                 where: {
                     conversationId,
                 },
-            }),
-            prisma.conversation.delete({
-                where: {
-                    id: conversationId,
-                },
-                include: conversationPopulated,
             }),
         ]);
 
