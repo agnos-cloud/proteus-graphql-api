@@ -8,7 +8,8 @@
   "private": false,
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "prisma:generate": "npx prisma generate --schema=src/prisma/schema.prisma"
+    "prisma:generate": "npx prisma generate --schema=src/prisma/schema.prisma",
+    "t": "tsc --traceResolution"
   },
   "dependencies": {
     "@apollo/server": "^4.7.1",

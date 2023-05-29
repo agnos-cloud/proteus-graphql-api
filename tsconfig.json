@@ -7,7 +7,15 @@
         "module": "CommonJS",
         "moduleResolution": "node",
         "esModuleInterop": true,
-        "types": ["node"]
+        "types": ["node"],
+        "baseUrl": ".",
+        "paths": {
+          "@/*": ["./src/*"],
+          "@auth": [ "./src/auth" ],
+          "@types": [ "./src/types" ],
+          "@utils": [ "./src/utils" ],
+          "@utils/*": [ "./src/utils/*" ],
+        }
     },
     "ts-node": {
         "esm": true

@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql";
-import { GraphQLContext } from "../../../utils/types";
+import { GraphQLContext } from"@types";
 import { Character } from "../model/character.model";
 
 export default {

@@ -13,7 +13,7 @@ import http from "http";
 import { getSession } from "next-auth/react";
 import { WebSocketServer } from "ws";
 import graphql from "./graphql";
-import { GraphQLContext, SubscriptionContext } from "./utils/types";
+import { GraphQLContext, SubscriptionContext } from "@types";
 import cors from "cors";
 import { json } from "body-parser";
 

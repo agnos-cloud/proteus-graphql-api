@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql";
-import { GraphQLContext } from "../../../utils/types";
+import { GraphQLContext } from "@types";
 import { Prisma } from "@prisma/client";
 import { ObjectID } from "bson";
 import { conversationPopulated } from "../../conversation/resolvers/conversation.mutations.resolvers";
