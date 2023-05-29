@@ -1,8 +1,8 @@
 import { UserMessage } from "@prisma/client";
 import { GraphQLError } from "graphql";
-import { GraphQLContext } from "../../../utils/types";
+import { GraphQLContext } from "@types";
 import { CharacterMessagePopulated, UserMessagePopulated } from "./message.subscriptions.resolvers";
-import { userIsConversationParticipant } from "../../../utils/functions";
+import { userIsConversationParticipant } from "../../../utils";
 import { conversationPopulated } from "../../conversation/resolvers/conversation.mutations.resolvers";
 import { characterMessagePopulated, userMessagePopulated } from "./message.mutations.resolvers";
 

@@ -1,5 +1,5 @@
 import { withFilter } from "graphql-subscriptions";
-import { GraphQLContext } from "../../../utils/types";
+import { GraphQLContext } from "@types";
 import { Prisma } from "@prisma/client";
 import { characterMessagePopulated, userMessagePopulated } from "./message.mutations.resolvers";
 

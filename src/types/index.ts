@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
-import { ISODateString } from "next-auth";
-import { Context } from "graphql-ws/lib/server"
 import { PubSub } from "graphql-subscriptions";
+import { Context } from "graphql-ws/lib/server";
+import { ISODateString } from "next-auth";
 
 export interface GraphQLContext {
     prisma: PrismaClient;

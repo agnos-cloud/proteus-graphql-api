@@ -1,6 +1,6 @@
 import { withFilter } from "graphql-subscriptions";
-import { GraphQLContext } from "../../../utils/types";
-import { userIsConversationParticipant } from "../../../utils/functions";
+import { GraphQLContext } from "@types";
+import { userIsConversationParticipant } from "../../../utils";
 
 export default {
     conversationCreated: {

@@ -38,6 +38,11 @@ plans:
                     can also respond with video
                     can also respond with a combination of text, images, audio, and video
                     can also respond with custom widgets
+    response length:
+        basic: can only respond with a single message of not more than 1000? characters
+        production: can also respond with multiple messages of not more than 1000? characters each
+        advanced: can also respond with a single message of not more than 10000? characters
+                    can also respond with multiple messages of not more than 10000? characters each
     actions:
         basic: can make an API call
     fine-tuning:
