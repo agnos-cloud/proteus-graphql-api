@@ -1,38 +1,29 @@
-import { GraphQLError } from "graphql";
-import { GraphQLContext } from"@types";
-import { Character } from "../model/character.model";
+import { GraphQLContext } from "@types";
+import { authenticateContext } from "../../../auth";
+import { CharacterPopulated, CreateCharacterArgs, characterPopulated } from "../types";
 
 export default {
-    createCharacter: async (_: any, args: any, context: GraphQLContext): Promise<Character> => {
-        const { prisma, session } = context;
+    createCharacter: async (_: any, args: CreateCharacterArgs, context: GraphQLContext): Promise<CharacterPopulated> => {
+        const { prisma, session, pubsub } = context;
 
-        if (!session?.user?.id) {
-            throw new GraphQLError("You must be authenticated");
-        }
+        await authenticateContext(context);
 
-       const { id } = session.user;
-
-        const user = await prisma.user.findUnique({
-            where: {
-                id,
-            },
-        });
-
-        if (!user) {
-            throw new GraphQLError("You must be authenticated");
-        }
-
-        const { name, description, org } = args.input;
+        const { name, description, orgId } = args.input;
         const character = await prisma.character.create({
             data: {
                 name,
                 description,
                 org: {
                     connect: {
-                        id: org,
+                        id: orgId,
                     },
                 },
             },
+            include: characterPopulated,
+        });
+
+        pubsub.publish("CHARACTER_CREATED", {
+            characterCreated: character,
         });
 
         return character;

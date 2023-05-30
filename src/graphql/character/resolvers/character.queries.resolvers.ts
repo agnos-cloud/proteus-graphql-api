@@ -1,28 +1,14 @@
-import { GraphQLError } from "graphql";
 import { GraphQLContext } from "@types";
-import { Character } from "../model/character.model";
+import { authenticateContext } from "../../../auth";
+import { CharacterPopulated, SearchCharacterArgs, characterPopulated } from "../types";
 
 export default {
-    characters: async (_: any, args: any, context: GraphQLContext): Promise<Array<Character>> => {
+    characters: async (_: any, args: SearchCharacterArgs, context: GraphQLContext): Promise<Array<CharacterPopulated>> => {
         const { prisma, session } = context;
 
-        if (!session?.user?.id) {
-            throw new GraphQLError("You must be authenticated");
-        }
+        await authenticateContext(context);
 
-       const { id } = session.user;
-
-        const user = await prisma.user.findUnique({
-            where: {
-                id,
-            },
-        });
-
-        if (!user) {
-            throw new GraphQLError("You must be authenticated");
-        }
-
-        const { name, org } = args.input;
+        const { name, orgId } = args.input;
 
         const characters = await prisma.character.findMany({
             where: {
@@ -31,8 +17,12 @@ export default {
                     mode: "insensitive",
                 }}),
                 org: {
-                    id: org,
+                    id: orgId,
                 },
+            },
+            include: characterPopulated,
+            orderBy: {
+                updatedAt: "desc",
             },
         });
 

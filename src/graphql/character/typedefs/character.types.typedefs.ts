@@ -12,13 +12,13 @@ export const typeDefs = gql`
 
     input CharacterInput {
         name: String!
-        org: ID!
+        orgId: ID!
         description: String
     }
 
     input CharacterSearchInput {
         name: String
-        org: ID!
+        orgId: ID!
     }
 `;
 

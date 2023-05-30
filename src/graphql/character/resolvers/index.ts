@@ -5,5 +5,5 @@ import Subscription from "./character.subscriptions.resolvers";
 export default {
     Mutation,
     Query,
-    // Subscription,
+    Subscription,
 };

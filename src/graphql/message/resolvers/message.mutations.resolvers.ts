@@ -10,6 +10,7 @@ export const characterMessagePopulated = Prisma.validator<Prisma.CharacterMessag
         select: {
             id: true,
             name: true,
+            image: true,
         },
     },
 });
@@ -19,6 +20,7 @@ export const userMessagePopulated = Prisma.validator<Prisma.UserMessageInclude>(
         select: {
             id: true,
             name: true,
+            image: true,
         },
     },
 });
