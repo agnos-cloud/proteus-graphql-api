@@ -24,3 +24,10 @@ export type OrgDeletedSubscriptionPayload = {
 export type OrgUpdatedSubscriptionPayload = {
     orgUpdated: OrgPopulated;
 };
+
+export type CreateOrgArgs = {
+    input: {
+        name: string;
+        description?: string;
+    }
+};
