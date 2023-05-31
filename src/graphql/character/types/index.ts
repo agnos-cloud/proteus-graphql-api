@@ -34,6 +34,10 @@ export type CreateCharacterArgs = {
     }
 };
 
+export type GetCharacterArgs = {
+    id: string;
+};
+
 export type SearchCharacterArgs = {
     input: {
         name?: string;

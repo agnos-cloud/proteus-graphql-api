@@ -12,6 +12,7 @@
         "paths": {
           "@/*": ["./src/*"],
           "@auth": [ "./src/auth" ],
+          "@org/*": [ "./src/graphql/org/*" ],
           "@types": [ "./src/types" ],
           "@utils": [ "./src/utils" ],
           "@utils/*": [ "./src/utils/*" ],

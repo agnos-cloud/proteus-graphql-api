@@ -1,10 +1,10 @@
 import { GraphQLContext } from "@types";
 import { GraphQLError } from "graphql";
 import { authenticateContext } from "../../../auth";
-import { OrgPopulated, orgPopulated } from "../types";
+import { GetOrgArgs, OrgPopulated, orgPopulated } from "../types";
 
 export default {
-    org: async (_: any, args: any, context: GraphQLContext): Promise<OrgPopulated> => {
+    org: async (_: any, args: GetOrgArgs, context: GraphQLContext): Promise<OrgPopulated> => {
         const { prisma, session } = context;
 
         await authenticateContext(context);
