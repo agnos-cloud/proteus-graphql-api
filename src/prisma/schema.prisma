@@ -97,7 +97,16 @@ model Character {
   messages      CharacterMessage[]
   org           Org      @relation(fields: [orgId], references: [id], onDelete: Cascade)
   orgId         String   @db.ObjectId
+  plan          Plan?    @default(FREE)
+  planExpiresAt DateTime?
   updatedAt     DateTime @updatedAt
+}
+
+enum Plan {
+  ADVANCED
+  BASIC
+  FREE
+  PRO
 }
 
 model Conversation {

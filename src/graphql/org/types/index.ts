@@ -31,3 +31,7 @@ export type CreateOrgArgs = {
         description?: string;
     }
 };
+
+export type GetOrgArgs = {
+    id: string;
+};

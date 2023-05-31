@@ -8,18 +8,6 @@ export type OpenaiOptions = {
 
 /*
 plans:
-    memory:
-        basic: remembers only immediate prompt
-        production: remembers all messages (or last few messages) in conversation
-        advanced: remembers all messages in conversation
-    knowledge:
-        basic: a simple text box of not more than 1000? characters
-        production: can also upload a file of not more than 1MB?
-                    an also crawl a website and use that as knowledge
-        advanced: can also upload a file of not more than 10MB?
-                  can also crawl a website and use that as knowledge
-                  can also use a database as knowledge
-                  can also use an API as knowledge
     knowledge update:
         basic: can only update knowledge manually
         production: can also update knowledge automatically after fixed interval (e.g. crawl a website every 7 days)
@@ -43,16 +31,10 @@ plans:
         production: can also respond with multiple messages of not more than 1000? characters each
         advanced: can also respond with a single message of not more than 10000? characters
                     can also respond with multiple messages of not more than 10000? characters each
-    actions:
-        basic: can make an API call
     fine-tuning:
         basic: can only fine-tune on a single prompt
         production: can fine-tune with JSONL files
-        advanced: can fine-tune with non-JSONL files
-    widgets:
-        basic: can only have an API key
-        production: can also have built-in widgets (e.g. chat boxes)
-        advanced: can also have custom widgets
+        advanced: can fine-tune with non-JSONL files, website URLs, and other sources
     metrics:
         basic: can only see basic metrics (e.g. number of conversations, number of messages, number of users) for a very short period of time (e.g. 1 day)
         production: can also see advanced metrics (e.g. number of messages per user, number of messages per conversation) for longer period of time (e.g. 1 week)
@@ -60,11 +42,6 @@ plans:
         advanced: can also see custom metrics
                     can also see metrics for a custom period of time
                     can also export metrics automatically via API calls
-    costs:
-        basic: $10 per month
-        production: $30 per month
-        advanced: $100 per month
-        enterprise: contact sales
 */
 
 export async function getAiResponse(prompt: string, options: OpenaiOptions): Promise<string> {

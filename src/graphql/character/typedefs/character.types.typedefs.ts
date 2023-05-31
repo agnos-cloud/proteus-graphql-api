@@ -4,10 +4,19 @@ export const typeDefs = gql`
     type Character {
         id: ID!
         name: String!
+        createdAt: Date
         description: String
         image: String
-        createdAt: Date
+        plan: Plan
+        planExpiresAt: Date
         updatedAt: Date
+    }
+
+    enum Plan {
+        ADVANCED
+        BASIC
+        FREE
+        PRO
     }
 
     input CharacterInput {
