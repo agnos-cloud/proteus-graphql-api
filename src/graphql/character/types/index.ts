@@ -38,9 +38,29 @@ export type GetCharacterArgs = {
     id: string;
 };
 
+export type SaveCharacterInstructionArgs = {
+    input: {
+        id: string;
+        instruction: string;
+        orgId: string;
+    }
+};
+
 export type SearchCharacterArgs = {
     input: {
         name?: string;
         orgId: string;
     }
 };
+
+export enum ModelFamily {
+    GOOGLE_AI = "GOOGLE_AI",
+    OPENAI = "OPENAI",
+}
+
+export enum Plan {
+    ADVANCED = "ADVANCED",
+    BASIC = "BASIC",
+    FREE = "FREE",
+    PRO = "PRO",
+}

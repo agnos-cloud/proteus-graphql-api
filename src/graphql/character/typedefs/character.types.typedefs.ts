@@ -7,6 +7,7 @@ export const typeDefs = gql`
         createdAt: Date!
         description: String
         image: String
+        instruction: String
         modelFamily: ModelFamily!
         plan: Plan!
         planExpiresAt: Date
@@ -34,6 +35,12 @@ export const typeDefs = gql`
     input CharacterSearchInput {
         name: String
         orgId: ID!
+    }
+
+    input SaveCharacterInstructionInput {
+        id: ID!
+        orgId: ID!
+        instruction: String!
     }
 `;
 

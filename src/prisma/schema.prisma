@@ -94,6 +94,7 @@ model Character {
   createdAt     DateTime @default(now())
   description   String?
   image         String?
+  instruction   String?
   messages      CharacterMessage[]
   modelFamily   ModelFamily         @default(OPENAI)
   org           Org                 @relation(fields: [orgId], references: [id], onDelete: Cascade)
