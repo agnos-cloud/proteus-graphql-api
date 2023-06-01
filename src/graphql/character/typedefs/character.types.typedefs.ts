@@ -4,12 +4,18 @@ export const typeDefs = gql`
     type Character {
         id: ID!
         name: String!
-        createdAt: Date
+        createdAt: Date!
         description: String
         image: String
-        plan: Plan
+        modelFamily: ModelFamily!
+        plan: Plan!
         planExpiresAt: Date
-        updatedAt: Date
+        updatedAt: Date!
+    }
+
+    enum ModelFamily {
+        GOOGLE_AI
+        OPENAI
     }
 
     enum Plan {
