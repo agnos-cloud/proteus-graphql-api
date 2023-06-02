@@ -1,6 +1,6 @@
-import { UserPopulated } from "../graphql/conversation/resolvers/conversation.mutations.resolvers";
+import { ConversationUserPopulated } from "../graphql/conversation/types";
 
-export function userIsConversationParticipant(users: Array<UserPopulated>, userId: string): boolean {
+export function userIsConversationParticipant(users: Array<ConversationUserPopulated>, userId: string): boolean {
     return !!users.find((user) => user.userId === userId);
 }
 

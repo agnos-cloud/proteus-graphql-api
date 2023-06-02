@@ -2,7 +2,7 @@ import { GraphQLError } from "graphql";
 import { GraphQLContext } from "@types";
 import { Prisma } from "@prisma/client";
 import { ObjectID } from "bson";
-import { conversationPopulated } from "../../conversation/resolvers/conversation.mutations.resolvers";
+import { conversationPopulated } from "../../conversation/types";
 import { getCharacterResponse } from "../../../utils/character";
 
 export const characterMessagePopulated = Prisma.validator<Prisma.CharacterMessageInclude>()({

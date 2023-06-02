@@ -1,41 +1,26 @@
-import { GraphQLError } from "graphql";
 import { GraphQLContext } from "@types";
-import { Conversation } from "../model/conversation.model";
-import { ConversationPopulated, conversationPopulated } from "./conversation.mutations.resolvers";
+import { authenticateContext } from "../../../auth";
+import { ConversationPopulated, SearchConversationArgs, conversationPopulated } from "../types";
 
 export default {
-    conversations: async (_: any, args: any, context: GraphQLContext): Promise<Array<ConversationPopulated>> => {
+    conversations: async (_: any, args: SearchConversationArgs, context: GraphQLContext): Promise<Array<ConversationPopulated>> => {
         const { prisma, session } = context;
 
-        if (!session?.user?.id) {
-            throw new GraphQLError("You must be authenticated");
-        }
+        await authenticateContext(context);
 
-       const { id } = session.user;
-
-        const user = await prisma.user.findUnique({
-            where: {
-                id,
-            },
-        });
-
-        if (!user) {
-            throw new GraphQLError("You must be authenticated");
-        }
-
-        const { org } = args.input;
+        const { orgId } = args.input;
 
         const conversations = await prisma.conversation.findMany({
             where: {
                 users: {
                     some: {
                         userId: {
-                            equals: id,
+                            equals: session?.user?.id,
                         },
                     },
                 },
                 org: {
-                    id: org,
+                    id: orgId,
                 },
             },
             orderBy: {

@@ -3,7 +3,7 @@ import { GraphQLError } from "graphql";
 import { GraphQLContext } from "@types";
 import { CharacterMessagePopulated, UserMessagePopulated } from "./message.subscriptions.resolvers";
 import { userIsConversationParticipant } from "../../../utils";
-import { conversationPopulated } from "../../conversation/resolvers/conversation.mutations.resolvers";
+import { conversationPopulated } from "../../conversation/types";
 import { characterMessagePopulated, userMessagePopulated } from "./message.mutations.resolvers";
 
 export default {

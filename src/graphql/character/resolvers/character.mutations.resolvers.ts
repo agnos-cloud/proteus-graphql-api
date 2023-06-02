@@ -4,7 +4,7 @@ import { CharacterPopulated, CreateCharacterArgs, SaveCharacterInstructionArgs, 
 
 export default {
     createCharacter: async (_: any, args: CreateCharacterArgs, context: GraphQLContext): Promise<CharacterPopulated> => {
-        const { prisma, session, pubsub } = context;
+        const { prisma, pubsub } = context;
 
         await authenticateContext(context);
 

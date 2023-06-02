@@ -33,7 +33,8 @@ export async function getCharacterResponse(prompt: string, context: CharacterCon
     }
 
     const completePrompt =
-    `Your name is ${character.name}. You are a member of ${character.org.name}. Your description is: ${character.description}`;
+    `Your name is ${character.name}. You are a member of ${character.org.name}. Your description is: ${character.description}\n` +
+    character.instruction ? `Your instructions are: ${character.instruction}\n` : "";
 
     try {
         const response = await getAiResponse(prompt, {

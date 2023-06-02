@@ -14,14 +14,13 @@ export const typeDefs = gql`
     }
 
     input ConversationInput {
-        characters: [ID!]
-        org: ID!
+        characterIds: [ID!]
+        orgId: ID!
     }
 
     input ConversationSearchInput {
-        characters: [ID!]
-        org: ID
-        id: ID
+        characterIds: [ID!]
+        orgId: ID!
     }
 
     type ConversationCharacter {
