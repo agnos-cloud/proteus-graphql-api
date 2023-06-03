@@ -3,6 +3,7 @@ import { GraphQLContext } from "@types";
 import { GraphQLError } from "graphql";
 import { CreateConversationArgs, conversationPopulated } from "../types";
 import { authenticateContext } from "../../../auth";
+import { triggerCharacterResponse } from "../../../graphql/message/resolvers/message.mutations.resolvers";
 
 export default {
     createConversation: async (_: any, args: CreateConversationArgs, context: GraphQLContext): Promise<Conversation> => {
@@ -38,7 +39,11 @@ export default {
             include: conversationPopulated,
         });
 
-        // TODO: send a welcome/introductory message from the AI character(s) to the conversation
+        // this triggers the characters in this new conversation to introduce themselves
+        await triggerCharacterResponse(_, {
+            content: "Hello, can you introduce yourself and welcome me?",
+            conversationId: conversation.id,
+        }, context);
 
         pubsub.publish("CONVERSATION_CREATED", {
             conversationCreated: conversation,

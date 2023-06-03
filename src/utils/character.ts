@@ -1,4 +1,5 @@
-import { Character, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
+import { MessageType } from "../graphql/message/types";
 import { getAiResponse } from "./openai";
 
 export type CharacterContext = {
@@ -8,10 +9,8 @@ export type CharacterContext = {
 
 export type CharacterResponse = {
     content: string;
-    type: ContentType;
+    type: MessageType;
 }
-
-export type ContentType = "TEXT" | "ERROR_MESSAGE";
 
 export async function getCharacterResponse(prompt: string, context: CharacterContext): Promise<CharacterResponse> {
     const character = await context.prisma.character.findUnique({
@@ -44,19 +43,12 @@ export async function getCharacterResponse(prompt: string, context: CharacterCon
 
         return {
             content: response,
-            type: "TEXT",
+            type: MessageType.TEXT,
         };
     } catch (error: any) {
-        if (error.response) {
-            return {
-                content: `${error.response.data} (status: ${error.response.status})`,
-                type: "ERROR_MESSAGE",
-            }
-        } else {
-            return {
-                content: error.message,
-                type: "ERROR_MESSAGE",
-            }
+        return {
+            content: error.message,
+            type: MessageType.ERROR_MESSAGE,
         }
     }
 }

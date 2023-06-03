@@ -5,6 +5,8 @@ export const conversationCharacterPopulated = Prisma.validator<Prisma.Conversati
         select: {
             id: true,
             name: true,
+            image: true,
+            modelFamily: true,
         },
     },
 });
@@ -14,6 +16,7 @@ export const conversationUserPopulated = Prisma.validator<Prisma.ConversationUse
         select: {
             id: true,
             name: true,
+            image: true,
         },
     },
 });
@@ -41,6 +44,7 @@ export const conversationPopulated = Prisma.validator<Prisma.ConversationInclude
                 select: {
                     id: true,
                     name: true,
+                    image: true,
                 },
             },
         },

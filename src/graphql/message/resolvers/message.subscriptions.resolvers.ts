@@ -1,7 +1,6 @@
-import { withFilter } from "graphql-subscriptions";
 import { GraphQLContext } from "@types";
-import { Prisma } from "@prisma/client";
-import { characterMessagePopulated, userMessagePopulated } from "./message.mutations.resolvers";
+import { withFilter } from "graphql-subscriptions";
+import { CharacterMessageSentPayload, SearchMessageArgs, UserMessageSentPayload } from "../types";
 
 export default {
     characterMessageSent: {
@@ -9,8 +8,8 @@ export default {
             (_: any, __: any, { pubsub }: GraphQLContext) => {
                 return pubsub.asyncIterator(["CHARACTER_MESSAGE_SENT"]);
             },
-            (payload: CharacterMessageSentPayload, variables, context: GraphQLContext) => {
-                return payload.characterMessageSent.conversationId === variables.input.conversation;
+            (payload: CharacterMessageSentPayload, variables: SearchMessageArgs, context: GraphQLContext) => {
+                return payload.characterMessageSent.conversationId === variables.input.conversationId;
             }
         )
     },
@@ -19,25 +18,10 @@ export default {
             (_: any, __: any, { pubsub }: GraphQLContext) => {
                 return pubsub.asyncIterator(["USER_MESSAGE_SENT"]);
             },
-            (payload: UserMessageSentPayload, variables, context: GraphQLContext) => {
-                return payload.userMessageSent.conversationId === variables.input.conversation;
+            (payload: UserMessageSentPayload, variables: SearchMessageArgs, context: GraphQLContext) => {
+                return payload.userMessageSent.conversationId === variables.input.conversationId;
             }
         )
     }
 };
 
-export interface CharacterMessageSentPayload {
-    characterMessageSent: CharacterMessagePopulated;
-}
-
-export type CharacterMessagePopulated = Prisma.CharacterMessageGetPayload<{
-    include: typeof characterMessagePopulated,
-}>;
-
-export interface UserMessageSentPayload {
-    userMessageSent: UserMessagePopulated;
-}
-
-export type UserMessagePopulated = Prisma.UserMessageGetPayload<{
-    include: typeof userMessagePopulated,
-}>;

@@ -1,36 +1,17 @@
 import { GraphQLError } from "graphql";
 import { GraphQLContext } from "@types";
-import { Prisma } from "@prisma/client";
 import { ObjectID } from "bson";
 import { conversationPopulated } from "../../conversation/types";
 import { getCharacterResponse } from "../../../utils/character";
+import { MessageType, SendMessageArgs, characterMessagePopulated, userMessagePopulated } from "../types";
+import { authenticateContext } from "../../../auth";
 
-export const characterMessagePopulated = Prisma.validator<Prisma.CharacterMessageInclude>()({
-    sender: {
-        select: {
-            id: true,
-            name: true,
-            image: true,
-        },
-    },
-});
+export const sendCharacterMessage = async (_: any, args: SendMessageArgs, context: GraphQLContext): Promise<boolean> => {
+    const { pubsub, prisma } = context;
 
-export const userMessagePopulated = Prisma.validator<Prisma.UserMessageInclude>()({
-    sender: {
-        select: {
-            id: true,
-            name: true,
-            image: true,
-        },
-    },
-});
+    // TODO: authenticate using an access token generated for this character/conversation
 
-const sendCharacterMessage = async (_: any, args: any, context: GraphQLContext): Promise<boolean> => {
-    const { pubsub, prisma, session } = context;
-
-    // TODO: authenticate using an access token generated for this character
-
-    const { id: messageId, conversation: conversationId, content, sender: senderId, type } = args.input;
+    const { id, conversationId, content, senderId, type } = args.input;
 
     const character = await prisma.character.findUnique({
         where: {
@@ -43,15 +24,14 @@ const sendCharacterMessage = async (_: any, args: any, context: GraphQLContext):
 
     const message = await prisma.characterMessage.create({
         data: {
-            id: messageId,
+            id,
             conversationId,
             content,
             senderId,
-            type: type || "TEXT",
+            type: type || MessageType.TEXT,
         },
         include: characterMessagePopulated,
     });
-    console.log(message);
 
     const conversation = await prisma.conversation.update({
         where: {
@@ -81,42 +61,68 @@ const sendCharacterMessage = async (_: any, args: any, context: GraphQLContext):
     return true;
 }
 
+export const triggerCharacterResponse = async (_: any, args: { content: string, conversationId: string }, context: GraphQLContext): Promise<boolean> => {
+    const { prisma } = context;
+    const { conversationId, content } = args
+
+    const characters = await prisma.conversationCharacter.findMany({
+        where: {
+            conversationId,
+        },
+        include: {
+            character: {
+                select: {
+                    id: true,
+                    name: true,
+                },
+            },
+        },
+    });
+
+    characters.forEach(async (character) => {
+        const { content: characterResponse, type: responseType } = await getCharacterResponse(content, {
+            characterId: character.characterId,
+            prisma,
+        });
+        sendCharacterMessage(
+            _,
+            {
+                input: {
+                    id: new ObjectID().toString(),
+                    conversationId,
+                    content: characterResponse,
+                    senderId: character.characterId,
+                    type: responseType,
+                },
+            },
+            context
+        );
+    });
+
+    return true;
+}
+
 export default {
     sendCharacterMessage,
 
-    sendUserMessage: async (_: any, args: any, context: GraphQLContext): Promise<boolean> => {
-        const { prisma, session, pubsub } = context;
+    sendUserMessage: async (_: any, args: SendMessageArgs, context: GraphQLContext): Promise<boolean> => {
+        const { prisma, pubsub, session } = context;
 
-        if (!session?.user?.id) {
-            throw new GraphQLError("You must be authenticated");
-        }
+        await authenticateContext(context);
 
-       const { id } = session.user;
+        const { id, conversationId, content, senderId, type } = args.input;
 
-       // TODO: no need to fetch the user if all we need is the id above
-        const user = await prisma.user.findUnique({
-            where: {
-                id,
-            },
-        });
-
-        if (!user) {
-            throw new GraphQLError("You must be authenticated");
-        }
-
-        const { id: messageId, conversation: conversationId, content, sender: senderId, type } = args.input;
-
-        if (user.id !== senderId) {
+        if (session.user?.id !== senderId) {
             throw new GraphQLError("You must be authorized");
         }
 
         const message = await prisma.userMessage.create({
             data: {
-                id: messageId,
+                id,
                 conversationId,
                 content,
                 senderId,
-                type: type || "TEXT",
+                type: type || MessageType.TEXT,
             },
             include: userMessagePopulated,
         });
@@ -128,38 +134,7 @@ export default {
         /*
         * send message to characters for responses
         */
-        const characters = await prisma.conversationCharacter.findMany({
-            where: {
-                conversationId,
-            },
-            include: {
-                character: {
-                    select: {
-                        id: true,
-                        name: true,
-                    },
-                },
-            },
-        });
-        characters.forEach(async (character) => {
-            const { content: characterResponse, type: responseType } = await getCharacterResponse(content, {
-                characterId: character.characterId,
-                prisma,
-            });
-            sendCharacterMessage(
-                _,
-                {
-                    input: {
-                        id: new ObjectID().toString(),
-                        conversation: conversationId,
-                        content: characterResponse,
-                        sender: character.characterId,
-                        type: responseType,
-                    },
-                },
-                context
-            );
-        });
+        await triggerCharacterResponse(_, { content, conversationId }, context);
 
         return true;
     }

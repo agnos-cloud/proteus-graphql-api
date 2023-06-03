@@ -28,13 +28,13 @@ export const typeDefs = gql`
     input MessageInput {
         id: ID
         content: String
-        conversation: ID!
-        sender: ID!
+        conversationId: ID!
+        senderId: ID!
         type: MessageType
     }
 
     input MessageSearchInput {
-        conversation: ID!
+        conversationId: ID!
     }
 
     enum MessageType {
