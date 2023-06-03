@@ -1,10 +1,10 @@
 import { GraphQLContext } from "@types";
 import { authenticateContext } from "../../../auth";
-import { CharacterPopulated, CreateCharacterArgs, characterPopulated } from "../types";
+import { CharacterPopulated, CreateCharacterArgs, SaveCharacterInstructionArgs, characterPopulated } from "../types";
 
 export default {
     createCharacter: async (_: any, args: CreateCharacterArgs, context: GraphQLContext): Promise<CharacterPopulated> => {
-        const { prisma, session, pubsub } = context;
+        const { prisma, pubsub } = context;
 
         await authenticateContext(context);
 
@@ -27,5 +27,29 @@ export default {
         });
 
         return character;
-    }
+    },
+    saveInstruction: async (_: any, args: SaveCharacterInstructionArgs, context: GraphQLContext): Promise<boolean> => {
+        const { prisma } = context;
+
+        await authenticateContext(context);
+
+        const { id, instruction, orgId } = args.input;
+
+        await prisma.character.findFirstOrThrow({
+            where: {
+                id,
+                orgId,
+            },
+        });
+        await prisma.character.update({
+            where: {
+                id,
+            },
+            data: {
+                instruction,
+            },
+        });
+
+        return true;
+    },
 };

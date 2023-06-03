@@ -35,10 +35,10 @@ export default {
 
         await authenticateContext(context);
 
-        const { id: orgId } = args;
+        const { id } = args;
         await prisma.org.update({
             where: {
-                id: orgId,
+                id,
             },
             data: {
                 openaiApiKey: null,
@@ -52,10 +52,10 @@ export default {
 
         await authenticateContext(context);
 
-        const { id: orgId, key: openaiApiKey } = args;
+        const { id, key: openaiApiKey } = args;
         await prisma.org.update({
             where: {
-                id: orgId,
+                id,
             },
             data: {
                 openaiApiKey,

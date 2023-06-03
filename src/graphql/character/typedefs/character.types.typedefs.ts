@@ -4,12 +4,19 @@ export const typeDefs = gql`
     type Character {
         id: ID!
         name: String!
-        createdAt: Date
+        createdAt: Date!
         description: String
         image: String
-        plan: Plan
+        instruction: String
+        modelFamily: ModelFamily!
+        plan: Plan!
         planExpiresAt: Date
-        updatedAt: Date
+        updatedAt: Date!
+    }
+
+    enum ModelFamily {
+        GOOGLE_AI
+        OPENAI
     }
 
     enum Plan {
@@ -28,6 +35,12 @@ export const typeDefs = gql`
     input CharacterSearchInput {
         name: String
         orgId: ID!
+    }
+
+    input SaveCharacterInstructionInput {
+        id: ID!
+        orgId: ID!
+        instruction: String!
     }
 `;
 

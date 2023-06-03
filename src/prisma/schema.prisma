@@ -94,12 +94,19 @@ model Character {
   createdAt     DateTime @default(now())
   description   String?
   image         String?
+  instruction   String?
   messages      CharacterMessage[]
-  org           Org      @relation(fields: [orgId], references: [id], onDelete: Cascade)
-  orgId         String   @db.ObjectId
-  plan          Plan?    @default(FREE)
+  modelFamily   ModelFamily         @default(OPENAI)
+  org           Org                 @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  orgId         String              @db.ObjectId
+  plan          Plan                @default(FREE)
   planExpiresAt DateTime?
-  updatedAt     DateTime @updatedAt
+  updatedAt     DateTime            @updatedAt
+}
+
+enum ModelFamily {
+  GOOGLE_AI
+  OPENAI
 }
 
 enum Plan {
