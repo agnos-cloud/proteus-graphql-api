@@ -1,9 +1,9 @@
-import { Configuration, OpenAIApi } from "openai";
+import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
 
 export type OpenaiOptions = {
     apiKey: string;
     model?: string;
-    context: string;
+    context?: string;
 };
 
 /*
@@ -44,18 +44,26 @@ plans:
                     can also export metrics automatically via API calls
 */
 
-export async function getAiResponse(prompt: string, options: OpenaiOptions): Promise<string> {
+export async function getEmbeddings(content: string, options: OpenaiOptions): Promise<number[]> {
     const configuration = new Configuration({
         apiKey: options.apiKey,
     });
     const ai = new OpenAIApi(configuration);
 
-    // const embedding = await ai?.createEmbedding({
-    //     model: "text-embedding-ada-002",
-    //     input: options.context,
-    //     user: "<user email/>id?>"
-    // })
-    // console.log(embedding.data.data[0].embedding);
+    const embedding = await ai?.createEmbedding({
+        model: "text-embedding-ada-002",
+        input: options.context,
+        user: "<user email/>id?>"
+    })
+    console.log(embedding.data.data[0].embedding);
+    return embedding.data.data[0].embedding;
+}
+
+export async function getResponse(prompt: string, options: OpenaiOptions): Promise<string> {
+    const configuration = new Configuration({
+        apiKey: options.apiKey,
+    });
+    const ai = new OpenAIApi(configuration);
 
     const completion = await ai.createCompletion({
         // see https://beta.openai.com/docs/api-reference/create-completion for more options
@@ -66,27 +74,25 @@ export async function getAiResponse(prompt: string, options: OpenaiOptions): Pro
         // user: <user email?>,
     });
 
-    // TODO: we should probably use the chat endpoint instead of the completion endpoint
-    // see https://platform.openai.com/docs/api-reference/chat/create
-    // we should get the last few messages (or all messages) from the conversation and use them in "messages"
-    // const chat = await ai.createChatCompletion({
-    //     model: "gpt-3.5-turbo",
-    //     messages: [
-    //         {
-    //             role: "user",
-    //             content: options.context,
-    //             name: "User"
-    //         },
-    //         {
-    //             role: "system",
-    //             content: options.context,
-    //             name: "User"
-    //         },
-    //     ],
-    //     max_tokens: 200,
-    // });
-
     console.log(completion.data)
 
     return completion.data.choices[0].text;
+}
+
+export async function getChatResponse(messages: ChatCompletionRequestMessage[], options: OpenaiOptions): Promise<string> {
+    const configuration = new Configuration({
+        apiKey: options.apiKey,
+    });
+    const ai = new OpenAIApi(configuration);
+
+    // see https://platform.openai.com/docs/api-reference/chat/create
+    const chat = await ai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages,
+        max_tokens: 200,
+    });
+
+    console.log(chat.data)
+
+    return chat.data.choices[0].message.content;
 }
