@@ -1,10 +1,12 @@
-import { GraphQLError } from "graphql";
+import { Plan } from "@prisma/client";
 import { GraphQLContext } from "@types";
 import { ObjectID } from "bson";
-import { conversationPopulated } from "../../conversation/types";
-import { getCharacterResponse } from "../../../utils/character";
-import { MessageType, SendMessageArgs, characterMessagePopulated, userMessagePopulated } from "../types";
+import { GraphQLError } from "graphql";
 import { authenticateContext } from "../../../auth";
+import rules from "../../../rules";
+import { getCharacterResponse } from "../../../utils/character";
+import { conversationPopulated } from "../../conversation/types";
+import { MessageType, SendMessageArgs, characterMessagePopulated, userMessagePopulated } from "../types";
 
 export const sendCharacterMessage = async (_: any, args: SendMessageArgs, context: GraphQLContext): Promise<boolean> => {
     const { pubsub, prisma } = context;
@@ -74,29 +76,78 @@ export const triggerCharacterResponse = async (_: any, args: { content: string, 
                 select: {
                     id: true,
                     name: true,
+                    modelFamily: true,
+                    plan: true,
+                    planExpiresAt: true,
                 },
             },
         },
     });
 
-    characters.forEach(async (character) => {
-        const { content: characterResponse, type: responseType } = await getCharacterResponse(content, {
-            characterId: character.characterId,
-            prisma,
-        });
-        sendCharacterMessage(
-            _,
-            {
-                input: {
-                    id: new ObjectID().toString(),
-                    conversationId,
-                    content: characterResponse,
-                    senderId: character.characterId,
-                    type: responseType,
+    const conversation = await prisma.conversation.findUnique({
+        where: {
+            id: conversationId,
+        },
+        include: {
+            messages: {
+                select: {
+                    id: true,
+                    conversationId: true,
+                    content: true,
+                    createdAt: true,
+                    senderId: true,
+                    type: true,
+                    updatedAt: true,
                 },
+                orderBy: {
+                    createdAt: "desc",
+                },
+                take: rules.maxConversationMessagesLength(Plan.ADVANCED) * characters.length,
             },
-            context
-        );
+            userMessages: {
+                select: {
+                    id: true,
+                    conversationId: true,
+                    content: true,
+                    createdAt: true,
+                    senderId: true,
+                    type: true,
+                    updatedAt: true,
+                },
+                orderBy: {
+                    createdAt: "desc",
+                },
+                take: rules.maxConversationMessagesLength(Plan.ADVANCED),
+            },
+        },
+    });
+
+    characters.forEach(async (character) => {
+        // TODO: check if character has a plan and if it has expired
+
+        const { content: characterResponse, type: characterResponseType } = await getCharacterResponse(content, {
+            characterId: character.characterId,
+            conversationId,
+            prisma,
+            messages: conversation.messages.filter((message) => message.senderId === character.characterId),
+            userMessages: conversation.userMessages,
+        });
+
+        if (characterResponse && characterResponseType) {
+            sendCharacterMessage(
+                _,
+                {
+                    input: {
+                        id: new ObjectID().toString(),
+                        conversationId,
+                        content: characterResponse,
+                        senderId: character.characterId,
+                        type: characterResponseType,
+                    },
+                },
+                context
+            );
+        }
     });
 
     return true;

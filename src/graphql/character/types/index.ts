@@ -52,15 +52,3 @@ export type SearchCharacterArgs = {
         orgId: string;
     }
 };
-
-export enum ModelFamily {
-    GOOGLE_AI = "GOOGLE_AI",
-    OPENAI = "OPENAI",
-}
-
-export enum Plan {
-    ADVANCED = "ADVANCED",
-    BASIC = "BASIC",
-    FREE = "FREE",
-    PRO = "PRO",
-}
