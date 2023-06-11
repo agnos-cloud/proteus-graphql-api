@@ -1,4 +1,4 @@
-import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
+import { ChatCompletionRequestMessage, Configuration, CreateEmbeddingResponse, OpenAIApi } from "openai";
 
 export type OpenaiOptions = {
     apiKey: string;
@@ -44,19 +44,19 @@ plans:
                     can also export metrics automatically via API calls
 */
 
-export async function getEmbeddings(content: string, options: OpenaiOptions): Promise<number[]> {
+export async function getEmbedding(content: string | string[], options: OpenaiOptions): Promise<CreateEmbeddingResponse> {
     const configuration = new Configuration({
         apiKey: options.apiKey,
     });
     const ai = new OpenAIApi(configuration);
 
-    const embedding = await ai?.createEmbedding({
+    const response = await ai?.createEmbedding({
         model: "text-embedding-ada-002",
-        input: options.context,
-        user: "<user email/>id?>"
+        input: content,
+        user: "default", // "<user email/>id?>"
     })
-    console.log(embedding.data.data[0].embedding);
-    return embedding.data.data[0].embedding;
+    console.log(response.data.data[0].embedding);
+    return response.data;
 }
 
 export async function getResponse(prompt: string, options: OpenaiOptions): Promise<string> {
