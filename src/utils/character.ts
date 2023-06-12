@@ -1,8 +1,8 @@
 import { CharacterMessage, ModelFamily, Plan, PrismaClient, UserMessage } from "@prisma/client";
-import { MessageType } from "../graphql/message/types";
-import { getResponse, getChatResponse } from "./openai";
 import { ChatCompletionRequestMessage } from "openai";
+import { MessageType } from "../graphql/message/types";
 import rules from "../rules";
+import { getChatResponse, getResponse } from "./openai";
 
 export type CharacterContext = {
     characterId: string;

@@ -8,8 +8,9 @@ GraphQL API for Proteus AI.
 - Create `.env` in the root directory. See the `.env.example` file for names of environment variables.
   - Reach out to a project member for values of environment variables.
 - Install dependencies by running `yarn`.
-  - Ideally, you should be running Node version 19.
+  - Ideally, you should be running Node version 19. However, for the successful installation of `next-auth` you need version 12, 14, or 16.
 - Start the server by running `yarn dev`.
+  - This starts the frontend server at port 4000 by default.
 
 ## Resources
 

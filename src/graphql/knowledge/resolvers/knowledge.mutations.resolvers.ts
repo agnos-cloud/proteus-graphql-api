@@ -1,16 +1,14 @@
-import { Plan } from "@prisma/client";
+import { Vector } from "@pinecone-database/pinecone";
 import { GraphQLContext } from "@types";
 import { ObjectID } from "bson";
 import { GraphQLError } from "graphql";
 import { authenticateContext } from "../../../auth";
-import rules from "../../../rules";
-import { getCharacterResponse } from "../../../utils/character";
-import { conversationPopulated } from "../../conversation/types";
-import { CreateEmbeddingFromTextArgs } from "../types";
 import { getEmbedding } from "../../../utils/openai";
+import { saveEmbeddings } from "../../../utils/pinecone";
+import { CreateKnowledgeFromTextArgs } from "../types";
 
 export default {
-    createEmbeddingFromText: async (_: any, args: CreateEmbeddingFromTextArgs, context: GraphQLContext): Promise<boolean> => {
+    createEmbeddingFromText: async (_: any, args: CreateKnowledgeFromTextArgs, context: GraphQLContext): Promise<boolean> => {
         const { prisma, pubsub, session } = context;
 
         await authenticateContext(context);
@@ -64,17 +62,40 @@ export default {
 
             const response = await getEmbedding(paras, { apiKey: character.org.openaiApiKey });
             if (response.data.length >= countParas) {
+                const embeddings: Vector[] = [];
                 for (let i = 0; i < countParas; i++) {
                     const embedding = response.data[i].embedding;
                     const para = paras[i];
-
-                    // TODO: store embedding in pinecone db
+                    embeddings.push({
+                        id: new ObjectID().toString(),
+                        metadata: {
+                            content: para,
+                            characterId,
+                            orgId: character.org.id,
+                        },
+                        values: embedding,
+                    });
                 }
-                // TODO: put all embeddings (or just their db IDS) in an embset
-                // publish the embset
-                // pubsub.publish("EMBSET_CREATED", {
-                //     embsetCreated: embset,
-                // });
+                await saveEmbeddings(embeddings);
+
+                const knowledge = await prisma.knowledge.create({
+                    data: {
+                        // characterId: character.id,
+                        character: {
+                            connect: {
+                                id: character.id,
+                            },
+                        },
+                        description: content.substring(0, 400) + (content.length > 400 ? "..." : ""),
+                        embeddings: embeddings.map((embedding) => embedding.id),
+                        name: "Raw Text",
+                    },
+                });
+                pubsub.publish("KNOWLEDGE_CREATED", {
+                    knowledgeCreated: knowledge,
+                });
+
+                return true;
             }
         } catch (error) {
             if (error.response) {
@@ -82,7 +103,5 @@ export default {
             }
             throw new GraphQLError(error.message);
         }
-
-        return true;
     }
 };
