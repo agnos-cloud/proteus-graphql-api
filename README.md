@@ -20,6 +20,7 @@ GraphQL API for Proteus AI.
 ## Tools
 
 - [OpenAI Tokenizer](https://platform.openai.com/tokenizer)
+- [Pinecone](https://www.pinecone.io/)
 - [Prompt Compare](https://gpttools.com/comparisontool)
 
 ## References
