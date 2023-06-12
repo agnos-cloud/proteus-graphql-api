@@ -45,6 +45,11 @@ plans:
 */
 
 export async function getEmbedding(content: string | string[], options: OpenaiOptions): Promise<CreateEmbeddingResponse> {
+    /*
+    NOTE: text-embedding-ada-002 produces 1536-dimensional embeddings
+    and cosine similarity is recommended to be used to compare them
+    See: https://platform.openai.com/docs/guides/embeddings
+    */
     const configuration = new Configuration({
         apiKey: options.apiKey,
     });

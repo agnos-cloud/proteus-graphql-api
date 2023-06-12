@@ -95,6 +95,7 @@ model Character {
   description   String?
   image         String?
   instruction   String?
+  knowledges    Knowledge[]
   messages      CharacterMessage[]
   modelFamily   ModelFamily         @default(OPENAI)
   org           Org                 @relation(fields: [orgId], references: [id], onDelete: Cascade)
@@ -180,4 +181,15 @@ model UserMessage {
 enum MessageType {
   TEXT
   ERROR_MESSAGE
+}
+
+model Knowledge {
+  id  String  @id @default(auto()) @map("_id") @db.ObjectId
+  character     Character     @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  characterId   String        @db.ObjectId
+  createdAt     DateTime      @default(now())
+  description   String?
+  embeddings    String[]
+  name          String
+  updatedAt     DateTime      @updatedAt
 }
