@@ -108,8 +108,6 @@ export default {
                                 id: true,
                                 name: true,
                                 orgId: true,
-                            },
-                            include: {
                                 org: {
                                     select: {
                                         id: true,
