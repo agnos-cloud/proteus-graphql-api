@@ -1,14 +1,15 @@
 import { Vector } from "@pinecone-database/pinecone";
+import { Knowledge } from "@prisma/client";
 import { GraphQLContext } from "@types";
 import { ObjectID } from "bson";
 import { GraphQLError } from "graphql";
 import { authenticateContext } from "../../../auth";
 import { getEmbedding } from "../../../utils/openai";
 import { saveEmbeddings } from "../../../utils/pinecone";
-import { CreateKnowledgeFromTextArgs } from "../types";
+import { CreateKnowledgeFromTextArgs, KnowledgeSourceType } from "../types";
 
 export default {
-    createEmbeddingFromText: async (_: any, args: CreateKnowledgeFromTextArgs, context: GraphQLContext): Promise<boolean> => {
+    createKnowledgeFromText: async (_: any, args: CreateKnowledgeFromTextArgs, context: GraphQLContext): Promise<Knowledge> => {
         const { prisma, pubsub, session } = context;
 
         await authenticateContext(context);
@@ -58,6 +59,8 @@ export default {
                 }
             }
 
+            console.log("paras: ", paras);
+
             const countParas = paras.length;
 
             const response = await getEmbedding(paras, { apiKey: character.org.openaiApiKey });
@@ -65,6 +68,7 @@ export default {
                 const embeddings: Vector[] = [];
                 for (let i = 0; i < countParas; i++) {
                     const embedding = response.data[i].embedding;
+                    console.log("embedding: ", embedding);
                     const para = paras[i];
                     embeddings.push({
                         id: new ObjectID().toString(),
@@ -76,7 +80,11 @@ export default {
                         values: embedding,
                     });
                 }
-                await saveEmbeddings(embeddings);
+                const result = await saveEmbeddings(embeddings);
+
+                if (!result) {
+                    throw new GraphQLError("Error saving embeddings");
+                }
 
                 const knowledge = await prisma.knowledge.create({
                     data: {
@@ -89,15 +97,35 @@ export default {
                         description: content.substring(0, 400) + (content.length > 400 ? "..." : ""),
                         embeddings: embeddings.map((embedding) => embedding.id),
                         name: "Raw Text",
+                        source: content,
+                        sourceType: KnowledgeSourceType.TEXT,
+                    },
+                    include: {
+                        character: {
+                            select: {
+                                id: true,
+                                name: true,
+                                orgId: true,
+                            },
+                            include: {
+                                org: {
+                                    select: {
+                                        id: true,
+                                        name: true,
+                                    },
+                                },
+                            },
+                        },
                     },
                 });
                 pubsub.publish("KNOWLEDGE_CREATED", {
                     knowledgeCreated: knowledge,
                 });
 
-                return true;
+                return knowledge;
             }
         } catch (error) {
+            console.log("error: ", error);
             if (error.response) {
                 throw new GraphQLError(error.response.data);
             }

@@ -169,13 +169,13 @@ model CharacterMessage {
 model UserMessage {
   id  String  @id @default(auto()) @map("_id") @db.ObjectId
   content        String
-  conversation  Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversation   Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   conversationId String   @db.ObjectId
-  createdAt     DateTime @default(now())
-  sender        User          @relation(fields: [senderId], references: [id])
+  createdAt      DateTime @default(now())
+  sender         User          @relation(fields: [senderId], references: [id])
   senderId       String   @db.ObjectId
   type           MessageType     @default(TEXT)
-  updatedAt     DateTime @updatedAt
+  updatedAt      DateTime @updatedAt
 }
 
 enum MessageType {
@@ -191,5 +191,13 @@ model Knowledge {
   description   String?
   embeddings    String[]
   name          String
+  source        String
+  sourceType    KnowledgeSourceType
   updatedAt     DateTime      @updatedAt
+}
+
+enum KnowledgeSourceType {
+  TEXT
+  PDF_FILE
+  WEB_LINK
 }

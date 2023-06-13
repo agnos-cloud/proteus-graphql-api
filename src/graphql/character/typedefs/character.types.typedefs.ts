@@ -9,6 +9,8 @@ export const typeDefs = gql`
         image: String
         instruction: String
         modelFamily: ModelFamily!
+        org: Org!
+        orgId: ID!
         plan: Plan!
         planExpiresAt: Date
         updatedAt: Date!

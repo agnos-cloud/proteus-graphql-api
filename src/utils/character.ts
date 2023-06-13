@@ -2,7 +2,8 @@ import { CharacterMessage, ModelFamily, Plan, PrismaClient, UserMessage } from "
 import { ChatCompletionRequestMessage } from "openai";
 import { MessageType } from "../graphql/message/types";
 import rules from "../rules";
-import { getChatResponse, getResponse } from "./openai";
+import { getChatResponse, getEmbedding, getResponse } from "./openai";
+import { query } from "./pinecone";
 
 export type CharacterContext = {
     characterId: string;
@@ -36,13 +37,18 @@ export async function getCharacterResponse(prompt: string, context: CharacterCon
         throw new Error("Character not found");
     }
 
+    const response = await getEmbedding(prompt, { apiKey: character.org.openaiApiKey });
+    const queryResponse = await query(response.data[0].embedding, character.id);
+    console.log("queryResponse: ", queryResponse);
+
     const contextPrompt =
     `Your name is ${character.name}. You are a member of ${character.org.name}. Your description is: ${character.description}\n` +
+    queryResponse && queryResponse.length ? `Use this information to answer questions: \n${queryResponse.join("\n")}` : "" +
     character.instruction ? `Your instructions are: ${character.instruction}\n` : "";
 
     if (character.modelFamily === ModelFamily.OPENAI) {
         if (character.plan === Plan.BASIC || character.plan === Plan.FREE) {
-            return getResponseFromOpenai(prompt, contextPrompt, { apiKey: character.org.openaiApiKey });
+            return getResponseFromOpenai(`${prompt}\n`, contextPrompt, { apiKey: character.org.openaiApiKey });
         } else if (character.plan === Plan.PRO) {
             return getChatResponseFromOpenai(
                 (context.messages || []).slice(0, rules.maxConversationMessagesLength(Plan.PRO)),
