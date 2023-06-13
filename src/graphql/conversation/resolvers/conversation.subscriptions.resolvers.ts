@@ -1,7 +1,12 @@
-import { withFilter } from "graphql-subscriptions";
 import { GraphQLContext } from "@types";
+import { withFilter } from "graphql-subscriptions";
 import { userIsConversationParticipant } from "../../../utils";
-import { ConversationCreatedSubscriptionPayload, ConversationDeletedSubscriptionPayload, ConversationUpdatedSubscriptionPayload, SearchConversationArgs } from "../types";
+import {
+    ConversationCreatedSubscriptionPayload,
+    ConversationDeletedSubscriptionPayload,
+    ConversationUpdatedSubscriptionPayload,
+    SearchConversationArgs
+} from "../types";
 
 export default {
     conversationCreated: {

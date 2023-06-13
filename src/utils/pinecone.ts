@@ -18,6 +18,31 @@ export const getPineconeClient = async (): Promise<PineconeClient> => {
     return pineconeClient;
 };
 
+export async function query(queryEmbedding: number[], characterId: string): Promise<Array<string>> {
+    const indexName = process.env.PINECONE_INDEX;
+    const pineconeClient = await getPineconeClient();
+
+    // Select the target Pinecone index
+    const index = pineconeClient.Index(indexName);
+
+    const result = await index.query({
+        queryRequest: {
+            vector: queryEmbedding,
+            topK: 2,
+            includeMetadata: true,
+            includeValues: false,
+            namespace: "default",
+            filter: {
+                characterId,
+            },
+        }
+    });
+
+    console.log("result.matches: ", result.matches);
+
+    return result.matches.map((match) => match.metadata["content"]);
+}
+
 export async function saveEmbeddings(embeddings: Vector[]): Promise<boolean> {
     const indexName = process.env.PINECONE_INDEX;
     const pineconeClient = await getPineconeClient();

@@ -16,6 +16,7 @@ GraphQL API for Proteus AI.
 
 - [GPT-4 - How does it work, and how do I build apps with it? - CS50 Tech Talk](https://www.youtube.com/watch?v=vw-KWfKwvTQ)
 - [OpenAI Embedding Tutorial](https://blinkdata.com/openai-embedding-tutorial/)
+- [Pinecone Docs](https://docs.pinecone.io/docs/overview)
 
 ## Tools
 

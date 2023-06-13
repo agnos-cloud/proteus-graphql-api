@@ -33,10 +33,6 @@ export const typeDefs = gql`
         hasUnread: Boolean
         user: User
     }
-
-    # type ConversationUpdatedSubscriptionPayload {
-    #     conversation: Conversation
-    # }
 `;
 
 export default typeDefs;
