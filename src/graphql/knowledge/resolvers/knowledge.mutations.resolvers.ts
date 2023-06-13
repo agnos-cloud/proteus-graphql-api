@@ -49,6 +49,8 @@ export default {
 
             // Some more formatting and pushing each paragraph to paras[]
             for (let i = 0; i < rawParas.length; i++) {
+                // replace newlines with spaces
+                // see: https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/embeddings?tabs=console#replace-newlines-with-a-single-space
                 const rawPara = rawParas[i].trim().replaceAll("\n", " ").replace(/\r/g, "");
 
                 // Check of it is a question and has greater length than minimum
