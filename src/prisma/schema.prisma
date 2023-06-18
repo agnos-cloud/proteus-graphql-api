@@ -121,13 +121,14 @@ enum Plan {
 model Conversation {
   id  String  @id @default(auto()) @map("_id") @db.ObjectId
   characters          ConversationCharacter[]
-  createdAt     DateTime @default(now())
+  createdAt           DateTime @default(now())
   latestMessage       CharacterMessage?      @relation(name: "latestMessage", fields: [latestMessageId], references: [id], onUpdate: NoAction, onDelete: NoAction)
   latestMessageId     String?   @db.ObjectId @unique
   messages            CharacterMessage[]
   org                 Org                    @relation(fields: [orgId], references: [id], onDelete: Cascade)
   orgId               String   @db.ObjectId
-  updatedAt     DateTime @updatedAt
+  state               String?
+  updatedAt           DateTime @updatedAt
   users               ConversationUser[]
   userMessages        UserMessage[]
 

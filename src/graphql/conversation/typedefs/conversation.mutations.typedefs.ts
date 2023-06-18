@@ -5,6 +5,7 @@ export const typeDefs = gql`
         createConversation(input: ConversationInput!): Conversation!
         deleteConversation(id: ID!): Boolean
         markConversationAsRead(id: ID!): Boolean
+        setConversationState(input: ConversationStateInput!): Boolean
     }
 `;
 

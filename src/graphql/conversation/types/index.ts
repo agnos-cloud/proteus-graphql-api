@@ -78,9 +78,26 @@ export type CreateConversationArgs = {
     }
 };
 
+export type DeleteConversationArgs = {
+    id: string;
+};
+
+export type MarkConversationAsReadArgs = {
+    id: string;
+};
+
 export type SearchConversationArgs = {
     input: {
         characterIds?: Array<string>;
         orgId: string;
+    }
+};
+
+export type SetConversationStateArgs = {
+    input: {
+        id: string;
+        key: string;
+        value: string;
+        parseValue?: boolean;
     }
 };
