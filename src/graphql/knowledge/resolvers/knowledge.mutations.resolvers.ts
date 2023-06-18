@@ -61,7 +61,9 @@ export default {
                 }
             }
 
-            console.log("paras: ", paras);
+            if (paras.length === 0) {
+                throw new GraphQLError("Could not create knowledge from text");
+            }
 
             const countParas = paras.length;
 
@@ -70,7 +72,6 @@ export default {
                 const embeddings: Vector[] = [];
                 for (let i = 0; i < countParas; i++) {
                     const embedding = response.data[i].embedding;
-                    console.log("embedding: ", embedding);
                     const para = paras[i];
                     embeddings.push({
                         id: new ObjectID().toString(),
@@ -125,7 +126,6 @@ export default {
                 return knowledge;
             }
         } catch (error) {
-            console.log("error: ", error);
             if (error.response) {
                 throw new GraphQLError(error.response.data);
             }
