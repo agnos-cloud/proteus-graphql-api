@@ -5,12 +5,13 @@ export const typeDefs = gql`
 
     type Conversation {
         id: ID!
-        latestMessage: CharacterMessage
         characters: [ConversationCharacter!]!
-        users: [ConversationUser!]!
         createdAt: Date
-        updatedAt: Date
+        latestMessage: CharacterMessage
         org: Org
+        state: String
+        updatedAt: Date
+        users: [ConversationUser!]!
     }
 
     input ConversationInput {
@@ -21,6 +22,13 @@ export const typeDefs = gql`
     input ConversationSearchInput {
         characterIds: [ID!]
         orgId: ID!
+    }
+
+    input ConversationStateInput {
+        id: ID!
+        key: String!
+        value: String!
+        parseValue: Boolean
     }
 
     type ConversationCharacter {

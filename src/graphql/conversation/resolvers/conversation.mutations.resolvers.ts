@@ -1,7 +1,13 @@
 import { Conversation } from "@prisma/client";
 import { GraphQLContext } from "@types";
 import { GraphQLError } from "graphql";
-import { CreateConversationArgs, conversationPopulated } from "../types";
+import {
+    CreateConversationArgs,
+    DeleteConversationArgs,
+    MarkConversationAsReadArgs,
+    SetConversationStateArgs,
+    conversationPopulated
+} from "../types";
 import { authenticateContext } from "../../../auth";
 import { triggerCharacterResponse } from "../../../graphql/message/resolvers/message.mutations.resolvers";
 
@@ -51,24 +57,10 @@ export default {
 
         return conversation;
     },
-    deleteConversation: async (_: any, args: any, context: GraphQLContext): Promise<boolean> => {
-        const { prisma, session, pubsub } = context;
+    deleteConversation: async (_: any, args: DeleteConversationArgs, context: GraphQLContext): Promise<boolean> => {
+        const { prisma, pubsub } = context;
 
-        if (!session?.user?.id) {
-            throw new GraphQLError("You must be authenticated");
-        }
-
-       const { id } = session.user;
-
-        const user = await prisma.user.findUnique({
-            where: {
-                id,
-            },
-        });
-
-        if (!user) {
-            throw new GraphQLError("You must be authenticated");
-        }
+        await authenticateContext(context);
 
         const { id: conversationId } = args;
         const [ deletedConversation ] = await prisma.$transaction([
@@ -96,30 +88,16 @@ export default {
 
         return true;
     },
-    markConversationAsRead: async (_: any, args: any, context: GraphQLContext): Promise<boolean> => {
+    markConversationAsRead: async (_: any, args: MarkConversationAsReadArgs, context: GraphQLContext): Promise<boolean> => {
         const { prisma, session } = context;
 
-        if (!session?.user?.id) {
-            throw new GraphQLError("You must be authenticated");
-        }
-
-       const { id } = session.user;
-
-        const user = await prisma.user.findUnique({
-            where: {
-                id,
-            },
-        });
-
-        if (!user) {
-            throw new GraphQLError("You must be authenticated");
-        }
+        await authenticateContext(context);
 
         const { id: conversationId } = args;
         const convoUser = await prisma.conversationUser.findFirst({
             where: {
                 conversationId,
-                userId: user.id,
+                userId: session?.user?.id,
             },
         });
         if (convoUser) {
@@ -132,6 +110,33 @@ export default {
                 },
             });
         }
+
+        return true;
+    },
+    setConversationState: async (_: any, args: SetConversationStateArgs, context: GraphQLContext): Promise<boolean> => {
+        const { prisma, session } = context;
+
+        await authenticateContext(context);
+
+        const { id: conversationId, key, value, parseValue } = args.input;
+        const convo = await prisma.conversation.findFirst({
+            where: {
+                id: conversationId,
+            },
+        });
+        if (!convo) {
+            throw new GraphQLError("Conversation not found");
+        }
+        const state = JSON.parse(convo.state || "{}");
+        state[key] = parseValue ? JSON.parse(value) : value;
+        await prisma.conversation.update({
+            where: {
+                id: conversationId,
+            },
+            data: {
+                state: JSON.stringify(state),
+            },
+        });
 
         return true;
     }
