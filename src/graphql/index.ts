@@ -1,4 +1,5 @@
 import character from "./character";
+import chatWidget from "./chat-widget";
 import conversation from "./conversation";
 import knowledge from "./knowledge";
 import message from "./message";
@@ -11,6 +12,7 @@ export default {
     resolvers: merge(
         {},
         character.resolvers,
+        chatWidget.resolvers,
         conversation.resolvers,
         knowledge.resolvers,
         message.resolvers,
@@ -19,6 +21,7 @@ export default {
     ),
     typeDefs: [
         ...character.typeDefs,
+        ...chatWidget.typeDefs,
         ...conversation.typeDefs,
         ...knowledge.typeDefs,
         ...message.typeDefs,
