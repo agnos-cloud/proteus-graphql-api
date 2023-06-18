@@ -19,6 +19,11 @@ export type CharacterResponse = {
 }
 
 export async function getCharacterResponse(prompt: string, context: CharacterContext): Promise<CharacterResponse> {
+    /*
+    Remember:
+    Context + Specific Information + Intent + Response Format = Perfect Prompt
+    */
+
     const character = await context.prisma.character.findUnique({
         where: {
             id: context.characterId,

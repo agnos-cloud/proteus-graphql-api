@@ -90,6 +90,7 @@ enum Role {
 model Character {
   id  String  @id @default(auto()) @map("_id") @db.ObjectId
   name          String
+  chatWidgets   ChatWidget[]
   conversations ConversationCharacter[]
   createdAt     DateTime @default(now())
   description   String?
@@ -200,4 +201,20 @@ enum KnowledgeSourceType {
   TEXT
   PDF_FILE
   WEB_LINK
+}
+
+// ========== widgets ==========
+
+model ChatWidget {
+  id  String  @id @default(auto()) @map("_id") @db.ObjectId
+  character       Character     @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  characterId     String        @db.ObjectId
+  createdAt       DateTime      @default(now())
+  description     String?
+  logo            String?    // overrides the character image if present
+  name            String     // set to the character name by default (on the frontend)
+  origins         String[]
+  primaryColor    String?
+  secondaryColor  String?
+  updatedAt       DateTime      @updatedAt
 }
