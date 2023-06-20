@@ -29,12 +29,13 @@ export type ChatWidgetUpdatedSubscriptionPayload = {
 
 export type CreateChatWidgetArgs = {
     input: {
-        name: string;
+        name?: string;
         characterId: string;
         description?: string;
-        origins: string[];
+        origins?: string[];
         primaryColor?: string;
         secondaryColor?: string;
+        tertiaryColor?: string;
     }
 };
 

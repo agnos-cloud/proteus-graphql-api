@@ -4,7 +4,7 @@ import { ChatWidgetPopulated, SearchChatWidgetArgs, chatWidgetPopulated } from "
 
 export default {
     chatWidgets: async (_: any, args: SearchChatWidgetArgs, context: GraphQLContext): Promise<Array<ChatWidgetPopulated>> => {
-        const { prisma, session } = context;
+        const { prisma } = context;
 
         await authenticateContext(context);
 
