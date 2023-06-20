@@ -21,9 +21,13 @@ COPY . .
 # RUN yarn build
 CMD yarn dev
 
+# the purpose of this stage is to install the dependencies like next-auth which require Node v 16
+# before switching to Node v 18 for production
 FROM base as preproduction
 COPY package.json yarn.lock ./
-RUN yarn install --production=true --frozen-lockfile
+RUN yarn install
+# --production=true --frozen-lockfile
+RUN yarn build
 
 FROM node:18.12.0 as production
 WORKDIR /home/node/app

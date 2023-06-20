@@ -2,12 +2,13 @@
     "compilerOptions": {
         "rootDirs": ["src"],
         "outDir": "dist",
-        "lib": ["es2021"],
+        "lib": ["dom", "dom.iterable", "es2021"],
         "target": "es2021",
         "module": "CommonJS",
         "moduleResolution": "node",
         "esModuleInterop": true,
         "types": ["node"],
+        "jsx": "preserve",
         "baseUrl": ".",
         "paths": {
           "@/*": ["./src/*"],
