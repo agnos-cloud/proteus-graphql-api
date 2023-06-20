@@ -213,9 +213,10 @@ model ChatWidget {
   createdAt       DateTime      @default(now())
   description     String?
   logo            String?    // overrides the character image if present
-  name            String     // set to the character name by default (on the frontend)
+  name            String?     // set to the character name by default (on the frontend)
   origins         String[]
   primaryColor    String?
   secondaryColor  String?
+  tertiaryColor   String?
   updatedAt       DateTime      @updatedAt
 }

@@ -16,6 +16,7 @@ export default {
             origins,
             primaryColor,
             secondaryColor,
+            tertiaryColor,
         } = args.input;
         const chatWidget = await prisma.chatWidget.create({
             data: {
@@ -24,6 +25,7 @@ export default {
                 origins,
                 primaryColor,
                 secondaryColor,
+                tertiaryColor,
                 character: {
                     connect: {
                         id: characterId,

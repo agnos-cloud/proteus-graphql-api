@@ -14,16 +14,18 @@ export const typeDefs = gql`
         origins: [String]
         primaryColor: String
         secondaryColor: String
+        tertiaryColor: String
         updatedAt: Date
     }
 
     input ChatWidgetInput {
-        name: String!
+        name: String
         characterId: ID!
         description: String
-        origins: [String]!
+        origins: [String]
         primaryColor: String
         secondaryColor: String
+        tertiaryColor: String
     }
 
     input ChatWidgetSearchInput {
