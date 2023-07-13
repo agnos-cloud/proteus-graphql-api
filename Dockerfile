@@ -1,4 +1,4 @@
-FROM node:16 as base
+FROM --platform=linux/amd64 node:16 as base
 WORKDIR /home/node/app
 EXPOSE 3000
 
@@ -26,7 +26,7 @@ COPY /src ./src
 RUN yarn prisma:generate
 RUN yarn build
 
-FROM node:18.12.0 as production
+FROM --platform=linux/amd64 node:18.12.0 as production
 WORKDIR /home/node/app
 # expose ports 3000 for the app, 80 for the nginx server, 443 for https, 22 for ssh
 EXPOSE 3000 80 443
